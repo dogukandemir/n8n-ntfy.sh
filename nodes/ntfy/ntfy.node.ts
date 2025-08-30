@@ -73,6 +73,13 @@ export class Ntfy implements INodeType {
 				default: '',
 			},
 			{
+				displayName: 'Delay',
+				name: 'delay',
+				type: 'string',
+				default: '',
+				description: 'Schedule delivery for later. Use Unix timestamp (1639194738), duration (30m, 3h, 2 days), or natural language (10am, 8:30pm, tomorrow 3pm). Min: 10 seconds, Max: 3 days.',
+			},
+			{
 				displayName: 'Additional Fields',
 				name: 'additional_fields',
 				type: 'collection',
@@ -105,8 +112,11 @@ export class Ntfy implements INodeType {
 			} = {};
 
 
-			for (const field of ['topic', 'message', 'title', 'priority', 'click']) {
-				body[field] = this.getNodeParameter(field, i) as string;
+			for (const field of ['topic', 'message', 'title', 'priority', 'click', 'delay']) {
+				const value = this.getNodeParameter(field, i) as string;
+				if (value) {
+					body[field] = value;
+				}
 			}
 
 			body.tags = this.getNodeParameter('tags', i)?.toString().replace(/\s/, '').split(',');
